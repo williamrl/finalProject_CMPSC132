@@ -21,9 +21,9 @@ body {
 #sudoku-grid {
     display: grid;
     grid-template-columns: repeat(9, 40px);
-    grid-gap: 1px;
-    border: 3px solid #000; /* Thick border around the entire grid */
-    background-color: #000; /* Black background to show through gaps */
+    grid-gap: 1px; /* This creates the spacing between cells */
+    padding: 3px; /* This offsets the inner cells to align with the outer border */
+    background-color: #000; /* Background color for grid lines */
 }
 
 .sudoku-cell {
@@ -37,24 +37,15 @@ body {
     border: 1px solid #000; /* Consistent border for each cell */
 }
 
-/* Thick borders for 3x3 subgrids */
-.sudoku-cell:nth-child(3n), .sudoku-cell:nth-child(3n + 1) {
-    border-right: 2px solid #000; /* Fixes double border issue */
+/* Adding the thick border for the 3x3 squares */
+#sudoku-grid > :nth-child(3n) {
+    border-right: 3px solid #000;
 }
 
-.sudoku-cell:nth-child(27n), .sudoku-cell:nth-child(27n + 1), .sudoku-cell:nth-child(27n + 2) {
-    border-bottom: 2px solid #000; /* Fixes double border issue */
-}
-
-/* Adjusting first cell of each 3x3 subgrid to have top-left thicker border */
-.sudoku-cell:nth-child(27n + 1) {
-    border-top: 3px solid #000;
-    border-left: 3px solid #000;
-}
-
-/* Adjusting first cell of each row in 3x3 subgrid to have left thicker border */
-.sudoku-cell:nth-child(3n + 1) {
-    border-left: 3px solid #000;
+#sudoku-grid > :nth-child(n+19):nth-child(-n+27),
+#sudoku-grid > :nth-child(n+46):nth-child(-n+54),
+#sudoku-grid > :nth-child(n+73):nth-child(-n+81) {
+    border-bottom: 3px solid #000;
 }
 
 .controls {
@@ -79,6 +70,7 @@ button:hover {
 #timer, #message-box {
     margin-top: 20px;
     font-size: 20px;
+    color: aqua;
 }
 
 .error {
@@ -92,11 +84,4 @@ button:hover {
         height: 30px;
         font-size: 18px;
     }
-}
-
-#message-box {
-    color: #d9534f; /* red text for messages */
-    margin-top: 10px;
-    font-size: 16px;
-    font-weight: bold;
 }
