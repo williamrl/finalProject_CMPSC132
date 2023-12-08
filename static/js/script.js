@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const newGameButton = document.getElementById('new-game-btn');
     const validateButton = document.getElementById('validate-btn');
     const hintButton = document.getElementById('hint-btn');
+    const messageBox = document.getElementById('message-box');
     let timer;
     let elapsedTime = 0;
 
@@ -58,33 +59,42 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to validate the Sudoku solution
     function validateSolution() {
         let grid = [];
+        let isComplete = true;
+
         for (let i = 0; i < 9; i++) {
             let row = [];
             for (let j = 0; j < 9; j++) {
                 let cell = document.querySelector(`.sudoku-cell[data-row="${i}"][data-col="${j}"]`);
-                row.push(cell.value ? parseInt(cell.value) : 0);
+                let value = cell.value ? parseInt(cell.value) : 0;
+                row.push(value);
+                if (value === 0) {
+                    isComplete = false;
+                }
             }
             grid.push(row);
         }
-    
-        fetch('/validate-sudoku', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ solution: grid }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.is_valid) {
-                displayMessage("Congratulations! You solved it!");
-                stopTimer();
-            } else {
-                // Highlight all non-original and non-empty cells
-                highlightErrors();
-                displayMessage("There are errors in your solution.");
-            }
-        });
+
+        if (isComplete) {
+            fetch('/validate-sudoku', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ solution: grid }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                clearHighlights();
+                if (data.is_valid) {
+                    displayMessage("Congratulations! You solved it!");
+                    stopTimer();
+                } else {
+                    displayMessage("There are errors in your solution.");
+                }
+            });
+        } else {
+            displayMessage("The puzzle is not complete. Please fill in all cells.");
+        }
     }
     
     function highlightErrors() {
