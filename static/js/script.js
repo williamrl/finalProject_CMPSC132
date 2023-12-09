@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let timer;
     let elapsedTime = 0;
 
+    let hintCount = 0; // Counter to keep track of hints used
+
     // Function to generate the Sudoku grid
     function generateGrid(puzzle) {
         sudokuGrid.innerHTML = '';
@@ -51,6 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 resetTimer();
                 startTimer();
             });
+        hintCount = 0;
+        displayMessage("Good luck!");
     }
     function displayMessage(message) {
         const messageBox = document.getElementById('message-box');
@@ -108,6 +112,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Functionality for the hint button
     function provideHint() {
         let emptyCells = [];
+        if (hintCount >= 5) {
+            displayMessage("Hint limit reached. No more hints available!");
+            return;
+        }
         document.querySelectorAll('.sudoku-cell').forEach(cell => {
             if (!cell.value) {
                 emptyCells.push(cell);
@@ -127,6 +135,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             displayMessage("No valid hint available for this cell");
         }
+        hintCount++; // Increment the hint counter
+        displayMessage("Hint provided. " + (5 - hintCount) + " hints remaining.");
     }
     
     function findValidNumbersForCell(cell) {
